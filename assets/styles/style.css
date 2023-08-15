@@ -13,6 +13,10 @@ a {
   color: inherit;
 }
 
+body {
+  font-family: "Inter", sans-serif;
+}
+
 .main-cover {
   position: relative;
   width: 100%;
@@ -47,6 +51,8 @@ a {
   border-radius: 0.3rem;
   display: inline-block;
   border: 1px solid white;
+  color: white;
+  padding-left: 1rem;
 }
 
 [class^="button--"],
@@ -61,4 +67,20 @@ a {
   line-height: 2;
   font-size: 0.8rem;
   font-weight: bold;
+}
+
+.main-cover__title {
+  margin: 1rem 0;
+}
+.main-cover__subtitle {
+  margin-bottom: 1rem;
+}
+
+.search-input-container {
+  width: 100%;
+  max-width: 428px;
+  margin: 0 auto;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 3fr 1fr;
 }
