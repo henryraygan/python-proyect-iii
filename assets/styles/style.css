@@ -42,17 +42,17 @@ a {
 }
 
 .input-text {
-  background-color: white;
-  padding: 0.45rem;
-  border-radius: 0.85rem;
+  background-color: rgba(12, 12, 12, 0.5);
+  min-height: 3rem;
+  border-radius: 0.3rem;
   display: inline-block;
   border: 1px solid white;
 }
 
 [class^="button--"],
 .button {
-  --background-color: #7a7a7a;
-  --color-button: #000;
+  --background-color: #e60a15;
+  --color-button: white;
   border: 0;
   background: var(--background-color);
   color: var(--color-button);
