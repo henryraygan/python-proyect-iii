@@ -96,30 +96,33 @@ body {
 
 /* RESULT STYLE */
 
+.header-container__title {
+  
+  color: white;
+}
 
-
-.header-conteiner__link {
+.header-container__link {
   color: #0682B2;
   font-size: 18px;
 }
 
-.container {
+/* .container {
   width: 100%;
   max-width: 1550px;
   margin: 0 auto;
   border: solid black;
-}
+} */
 
-.header-conteiner {
+.header-container{
   display: flex;
   justify-content: space-between;
-  margin-bottom: 5rem;
+  margin: 2rem 0;
+  align-items: center;
   
 }
 
-.container-img {
+.container-movies {
 display: flex;
-justify-content: center;
 gap: 1rem;
 flex-wrap: wrap;
 min-height: 15rem;
