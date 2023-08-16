@@ -89,9 +89,7 @@ body {
 
 /* RESULT STYLE */
 
-.img-movie__container {
-  min-height: 1rem;
-}
+
 
 .header-conteiner__link {
   color: #0682B2;
@@ -102,14 +100,11 @@ body {
   width: 100%;
   max-width: 1550px;
   margin: 0 auto;
- 
-  
   border: solid black;
 }
 
 .header-conteiner {
   display: flex;
-  
   justify-content: space-between;
   margin-bottom: 5rem;
   
@@ -136,5 +131,18 @@ min-height: 15rem;
 
 .img-movie__title {
   color:#fbfbfb ;
-  font-size: 14;
+  font-size: 14px;
+  margin: .5rem 0;
+}
+
+.img-movie__text {
+  color: #7b7b7b;
+  font-size: 12px;
+  margin: .5rem 0;
+}
+
+.img-movie__link{
+ color: #a43b3b; 
+ text-decoration:underline;
+ font-size: 12px;
 }
