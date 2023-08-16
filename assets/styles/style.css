@@ -4,6 +4,7 @@
   box-sizing: border-box;
 }
 
+
 img {
   max-width: 100%;
 }
@@ -15,6 +16,7 @@ a {
 
 body {
   font-family: "Inter", sans-serif;
+  background-color: #181818;
 }
 
 .main-cover {
@@ -83,4 +85,56 @@ body {
   display: grid;
   gap: 1rem;
   grid-template-columns: 3fr 1fr;
+}
+
+/* RESULT STYLE */
+
+.img-movie__container {
+  min-height: 1rem;
+}
+
+.header-conteiner__link {
+  color: #0682B2;
+  font-size: 18px;
+}
+
+.container {
+  width: 100%;
+  max-width: 1550px;
+  margin: 0 auto;
+ 
+  
+  border: solid black;
+}
+
+.header-conteiner {
+  display: flex;
+  
+  justify-content: space-between;
+  margin-bottom: 5rem;
+  
+}
+
+.container-img {
+display: flex;
+justify-content: center;
+gap: 1rem;
+flex-wrap: wrap;
+min-height: 15rem;
+
+}
+
+.img-movie__container {
+  flex-basis: 300px;
+  object-fit: contain;
+}
+
+.img-movie__ticket {
+  height: 100%;
+  border-radius: 10px;
+}
+
+.img-movie__title {
+  color:#fbfbfb ;
+  font-size: 14;
 }
