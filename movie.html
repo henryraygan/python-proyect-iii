@@ -7,36 +7,31 @@
     <title>Actors Details</title>
     <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles/style.css" />
+    <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
+    <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
     <script src="./assets/js/httpClient.js"></script>
 </head>
 
 <body>
-    <div class="movie-header">
-        <img class="movie-header__background"
-            src="https://m.media-amazon.com/images/M/MV5BMGYxM2ZmYjEtYTQ4ZS00M2NkLThmNDgtOTczYmZkZGI2YTMyXkEyXkFqcGdeQWFkcmllY2xh._V1_.jpg"
-            alt="Cover of Movie">
-    </div>
+    <div id="headerComponent" class="movie-header"></div>
     <div class="movie-detail__content">
         <div class="container">
             <div class="movie">
-                <div class="movie-img">
-                    <img src="https://m.media-amazon.com/images/M/MV5BMmY1ODUzZGItNDllOS00MDBhLTg4NmUtYjU4YjUxMGNlYmMwXkEyXkFqcGdeQXVyODE5NzE3OTE@._V1_.jpg"
-                        alt="">
-                </div>
+                <div id="posterComponent" class="movie-img"></div>
                 <div class="movie-description">
-                    <span class="movie-clasification">PG-13</span>
-                    <h1 class="movie-description__title">
-                        Blue Beetle (2023)
-                    </h1>
-                    <p>
-                        An alien scarab chooses college graduate Jaime Reyes to be its symbiotic host, bestowing the
-                        teenager with a suit of armor that's capable of extraordinary and unpredictable powers,
-                        forever changing his destiny as he becomes the superhero known as Blue Beetle.
-                    </p>
+                    <div id="descriptionComponent">
+                    </div>
+                    <h3 class="movie-description__subtitle">
+                        Cast
+                    </h3>
+                    <div id="castListComponent" class="cast-list">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+
     <script src="./assets/js/movies.js"></script>
 </body>
 
