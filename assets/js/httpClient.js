@@ -1,9 +1,9 @@
 const _http = (() => {
   const api = {};
 
-  const URL_BASE = "https://imdb8.p.rapidapi.com";
+  const URL_BASE = "https://online-movie-database.p.rapidapi.com";
   const API_KEY = "86f6096c8emsh78cdec81ef90c92p1ab232jsnafe9ec521eee";
-  const API_HOST = "imdb8.p.rapidapi.com";
+  const API_HOST = "online-movie-database.p.rapidapi.com";
   const defaultHeaders = new Headers({
     "X-RapidAPI-Key": API_KEY,
     "X-RapidAPI-Host": API_HOST,
