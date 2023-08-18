@@ -16,7 +16,7 @@ a {
 body {
   background-color: #171717;
   font-family: "Inter", sans-serif;
-  background-color: #181818;
+  background-color: #000;
 }
 
 .container {
@@ -222,4 +222,60 @@ body {
   to {
     background-position: 315px 0, 0 0, 0 190px, 50px 195px;
   }
+}
+
+.movie-header {
+  position: relative;
+  height: 35vh;
+}
+
+.movie-header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: linear-gradient(to bottom, rgba(1, 10, 33, 0) 0, #000000 100%);
+}
+
+.movie-header__background {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  object-position: top;
+  z-index: -1;
+}
+
+.movie-detail__content {
+  background-color: rgba(0, 0, 0, 0.92);
+  padding-top: 3rem;
+  color: #fff;
+  z-index: 3;
+  position: relative;
+}
+
+.movie {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 2rem;
+  border-radius: 0.25rem;
+}
+
+.movie-img {
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.movie-clasification {
+  border: 1px solid #fff;
+  border-radius: 0.25rem;
+  padding: 0.15rem;
+}
+
+.movie-description__title {
+  margin: 1rem 0;
 }

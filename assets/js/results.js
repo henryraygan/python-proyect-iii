@@ -1,6 +1,6 @@
 const API_ENDPOINT = {
   autoComplete: "/auto-complete",
-  popularMovies: "/title/get-coming-soon-movies",
+  popularMovies: "/title/get-top-rated-movies",
   movieDetails: "/title/get-details",
 };
 const urlParams = new URLSearchParams(window.location.search);
@@ -96,8 +96,8 @@ const getDetails = async (elements, quantity) => {
   return moviesArray;
 };
 
-if (q_param) {
-  getResults();
-} else {
-  getTopCast();
-}
+// if (q_param) {
+//   getResults();
+// } else {
+//   getTopCast();
+// }
