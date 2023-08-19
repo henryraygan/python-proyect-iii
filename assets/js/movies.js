@@ -17,7 +17,6 @@ const formatDuration = (totalMinutes) => {
 
 const handleErrors = (error) => {
   console.error("An error occurred:", error);
-  // Aquí puedes agregar lógica adicional para mostrar mensajes de error al usuario, etc.
 };
 
 const getAuthors = (crew) => {
