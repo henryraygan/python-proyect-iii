@@ -6,9 +6,10 @@ const _http = (() => {
   const API_KEY_CDL = "d0486531d8mshcf14f3a2f908ebbp180698jsn07816ebf8378";
   const API_KEY_HNR = "2b97d8c9f0msh2d346418647e92ep1552e2jsn8da873862a63";
   const API_KEY_HOLA = "f3c6a13161msh989af510ef88749p146258jsn6836805cdb25";
+  const API_KEY_JDEV = "868ecb7370msh9014ccdf69ea8bcp1ab96cjsn45b67ec41e52";
   const API_HOST = "online-movie-database.p.rapidapi.com";
   const defaultHeaders = new Headers({
-    "X-RapidAPI-Key": API_KEY_HOLA,
+    "X-RapidAPI-Key": API_KEY_JDEV,
     "X-RapidAPI-Host": API_HOST,
   });
 

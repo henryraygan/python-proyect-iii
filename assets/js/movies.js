@@ -20,6 +20,9 @@ const handleErrors = (error) => {
 };
 
 const getAuthors = (crew) => {
+  if (!crew) {
+    return {};
+  }
   const { writer, director } = crew;
   return {
     writer: writer[0]?.name || "N/A",
@@ -28,19 +31,24 @@ const getAuthors = (crew) => {
 };
 
 const getMainCast = (cast) => {
-  console.log(cast);
+  if (!cast) {
+    return {};
+  }
   return cast.slice(0, 9).map(({ name, characters, image }) => ({
     name,
     image: image?.url || "",
-    character: characters[0] || "N/A",
+    character: characters?.[0] || "N/A",
   }));
 };
 
 const getInfoCredits = (credits) => {
+  if (!credits) {
+    return {};
+  }
   const { cast, crew } = credits;
   return {
-    cast: getMainCast(cast),
-    authors: getAuthors(crew),
+    cast: getMainCast(cast) || {},
+    authors: getAuthors(crew) || {},
   };
 };
 
