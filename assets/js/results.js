@@ -6,7 +6,7 @@ const ENDPOINT_API = {
   movieDetails: `${RESOURCE_ENDPOINT}/get-details`,
 };
 const urlParams = new URLSearchParams(window.location.search);
-const q_param = urlParams.get("q");
+const q_param = urlParams.get("list");
 const movieshtml = document.getElementById("rmovies");
 
 const handleErrors = (error) => {
@@ -87,10 +87,11 @@ const loadMoviesPosters = async (list, size) => {
   return listMovies;
 };
 
-async function LoadMovie() {
+async function LoadMovie(type = "cooming") {
   try {
-    const topCast = await API.getCoomingSoon();
-    const movies = await loadMoviesPosters(topCast, 9);
+    const list =
+      type === "top100" ? await getTopCast : await API.getCoomingSoon();
+    const movies = await loadMoviesPosters(list, 9);
     return movies;
   } catch (error) {
     handleErrors(error);
@@ -128,7 +129,7 @@ const mountListMoviesComponent = (element, movies) => {
   <div>
     <div>
       <h3 class="img-movie__title">${title}, ${year}</h3>
-      <p class="img-movie__text">${ formatDuration(runningTimeInMinutes)}</p>
+      <p class="img-movie__text">${formatDuration(runningTimeInMinutes)}</p>
       <a href="movie.html?id=${
         id.split("/")[2]
       }" class="img-movie__link">Información</a>
@@ -136,6 +137,4 @@ const mountListMoviesComponent = (element, movies) => {
   </div>
 </div>`;
   });
-  // const { image, title, id, year } = movie;
-  // let newId = id.split("/")[2];
 };

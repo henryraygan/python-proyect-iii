@@ -89,7 +89,7 @@ const getMovieData = (movieData) => {
 
 const getCoverMovie = (vi) => {
   const { heroImages } = vi;
-  console.log(heroImages)
+  console.log(heroImages);
   if (heroImages.length === 0) {
     return "./assets/images/no-cover.jpg";
   }
@@ -239,6 +239,8 @@ LoadMovie()
       cast,
       video,
     } = $movie;
+
+    document.title = title;
 
     mountHeaderComponent("headerComponent", cover);
     mountHeadingComponent("movieHeadComponent", { title, year });
