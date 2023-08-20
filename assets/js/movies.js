@@ -1,19 +1,5 @@
-const RESOURCE_ENDPOINT = "/title";
-const ENDPOINT_API = {
-  full_credits: `${RESOURCE_ENDPOINT}/get-full-credits`,
-  overview_details: `${RESOURCE_ENDPOINT}/get-overview-details`,
-  movie_videos: `${RESOURCE_ENDPOINT}/get-hero-with-promoted-video`,
-  video: `${RESOURCE_ENDPOINT}/get-video-playback`,
-};
-
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const _tconst = URL_PARAMS.get("id");
-
-const formatDuration = (totalMinutes) => {
-  const hours = Math.floor(totalMinutes / 60);
-  const minutes = totalMinutes % 60;
-  return `${hours}h ${minutes}m`;
-};
 
 const handleErrors = (error) => {
   console.error("An error occurred:", error);
@@ -82,7 +68,7 @@ const getMovieData = (movieData) => {
     certificate: certificate || null,
     rating: rating || null,
     genres,
-    duration: formatDuration(duration),
+    duration: _helpers.formatDuration(duration),
     description: text || "",
   };
 };
@@ -137,7 +123,7 @@ const getFromLocalStorageOrApi = async (endpoint, params, cacheType) => {
   }
 
   try {
-    const data = await _http.get(endpoint, params);
+    const data = await _httpClient.get(endpoint, params);
     localStorage.setItem(cacheKey, JSON.stringify(data));
     return data;
   } catch (error) {
@@ -148,21 +134,21 @@ const getFromLocalStorageOrApi = async (endpoint, params, cacheType) => {
 const API = {
   getMovie: async (nm) => {
     return getFromLocalStorageOrApi(
-      ENDPOINT_API.overview_details,
+      _httpClient.ENDPOINT.title.overview_details,
       { tconst: nm },
       "movie"
     );
   },
   getMovieCredits: async (nm) => {
     return getFromLocalStorageOrApi(
-      ENDPOINT_API.full_credits,
+      _httpClient.ENDPOINT.title.full_credits,
       { tconst: nm },
       "credits"
     );
   },
   getMovieVideos: async (nm) => {
     return getFromLocalStorageOrApi(
-      ENDPOINT_API.movie_videos,
+      _httpClient.ENDPOINT.title.movie_videos,
       {
         tconst: nm,
         currentCountry: "US",
@@ -174,7 +160,7 @@ const API = {
   getVideosLinks: async (vi_id) => {
     try {
       return getFromLocalStorageOrApi(
-        ENDPOINT_API.video,
+        _httpClient.ENDPOINT.title.video,
         { viconst: vi_id },
         "videoLinks"
       );
