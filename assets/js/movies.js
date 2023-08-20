@@ -55,8 +55,6 @@ const getInfoCredits = (credits) => {
     return {};
   }
   const { cast, crew } = credits;
-  console.log(cast);
-  console.log(crew);
   return {
     cast: getMainCast(cast) || null,
     authors: getAuthors(crew) || null,
@@ -66,10 +64,10 @@ const getInfoCredits = (credits) => {
 const getMovieData = (movieData) => {
   const {
     title: {
-      title = "N/A",
+      title = null,
       image: { url } = {},
-      year = "N/A",
-      runningTimeInMinutes: duration = "N/A",
+      year = null,
+      runningTimeInMinutes: duration = null,
     } = {},
     certificates: { US: [{ certificate } = {}] = [] } = {},
     ratings: { rating } = {},
@@ -81,8 +79,8 @@ const getMovieData = (movieData) => {
     title,
     year,
     image: url || "",
-    certificate: certificate || "N/A",
-    rating: rating || "N/A",
+    certificate: certificate || null,
+    rating: rating || null,
     genres,
     duration: formatDuration(duration),
     description: text || "",
@@ -91,6 +89,7 @@ const getMovieData = (movieData) => {
 
 const getCoverMovie = (vi) => {
   const { heroImages } = vi;
+  console.log(heroImages)
   if (heroImages.length === 0) {
     return "./assets/images/no-cover.jpg";
   }
@@ -243,12 +242,10 @@ LoadMovie()
 
     mountHeaderComponent("headerComponent", cover);
     mountHeadingComponent("movieHeadComponent", { title, year });
-    mountCastListComponent("castListComponent", cast);
+    mountCastListComponent("castComponent", cast);
     mountPosterComponent("posterComponent", image);
-    mountVideoComponent("movieVideoComponent", video);
+    mountVideoComponent("videoComponent", video);
     mountDescriptionComponent("descriptionComponent", {
-      title,
-      year,
       rating,
       certificate,
       authors,
@@ -273,19 +270,29 @@ const mountHeaderComponent = (element, urlImage, alt = "") => {
 const mountCastListComponent = (element, cast) => {
   const el = document.getElementById(element);
   if (!cast || !Array.isArray(cast) || cast.length === 0) {
-    el.innerHTML = "<p>No cast information available.</p>";
-    return;
+    return `<div class="movie-cast" id="castComponent">
+              <h3 class="movie-description__subtitle">Cast</h3>
+              <p>No cast information available.</p>
+            </div>`;
   }
-  cast.forEach((actor) => {
-    el.innerHTML += `
+
+  const castHTML = cast
+    .map(
+      (actor) => `
     <div class="cast">
         <img class="cast-photo" src="${
           actor.image || "./assets/images/no-image.webp"
         }" alt="${actor.name}">
         <p class="cast-name-actor">${actor.name}</p> as
         <span class="cast-name-character">${actor.character}</span>
-    </div>`;
-  });
+    </div>`
+    )
+    .join("");
+
+  el.innerHTML = `<div class="movie-cast" id="castComponent">
+  <h3 class="movie-description__subtitle">Cast</h3>
+  <div class="cast-list">${castHTML}</div>
+</div>`;
 };
 
 const mountPosterComponent = (element, image, alt = "") => {
@@ -293,38 +300,61 @@ const mountPosterComponent = (element, image, alt = "") => {
     <img class="poster-image" src="${image}" alt="${alt}">`;
 };
 
-const mountDescriptionComponent = (element, data) => {
-  const {
-    title,
-    year,
-    rating,
-    certificate,
-    description,
-    authors: { director, writer },
-    duration,
-  } = data;
-  document.getElementById(element).innerHTML = `
-                            <div class="movie-description__extra">
-                                <span class="movie-clasification">${certificate}</span>
-                                <span class="movie-rating">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                        class="ipc-icon ipc-icon--star sc-bde20123-4 ggvDm" viewBox="0 0 24 24"
-                                        fill="currentColor" role="presentation">
-                                        <path
-                                            d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z">
-                                        </path>
-                                    </svg>
-                                    ${rating} / 10
-                                </span>
-                            </div>
-                            <p id="authorComponent" class="movie-credits">
-                                <span>Director: <strong>${director}</strong></span>
-                                <span>Writer: <strong>${writer}</strong></span>
-                                <span>Duration: <strong>${duration}</strong></span>                                
-                            </p>
-                            <p class="movie-paragraph">
-                                ${description}
-                            </p>`;
+const mountDescriptionComponent = (
+  element,
+  { rating, certificate, description, authors: { director, writer }, duration }
+) => {
+  let html = "";
+
+  // Add movie classification and rating if available
+  if (certificate) {
+    html += `
+      <div class="movie-description__extra">
+        <span class="movie-clasification">${certificate}</span>`;
+    if (rating) {
+      html += `
+        <span class="movie-rating">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+              class="ipc-icon ipc-icon--star sc-bde20123-4 ggvDm" viewBox="0 0 24 24"
+              fill="currentColor" role="presentation">
+              <path
+                  d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z">
+              </path>
+          </svg>
+          ${rating} / 10
+        </span>`;
+    }
+    html += `
+      </div>`;
+  }
+
+  // Add director, writer, and duration if available
+  if (director || writer || duration) {
+    html += `
+      <p id="authorComponent" class="movie-credits">`;
+    if (director) {
+      html += `
+        <span>Director: <strong>${director}</strong></span><br>`;
+    }
+    if (writer) {
+      html += `
+        <span>Writer: <strong>${writer}</strong></span><br>`;
+    }
+    if (duration) {
+      html += `
+        <span>Duration: <strong>${duration}</strong></span>`;
+    }
+    html += `
+      </p>`;
+  }
+
+  // Add description if available
+  if (description) {
+    html += `
+      <p class="movie-paragraph">${description}</p>`;
+  }
+
+  document.getElementById(element).innerHTML = html;
 };
 
 const mountHeadingComponent = (element, { title, year }) => {

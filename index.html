@@ -1,33 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Actors Details</title>
-  <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet">
+  <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet" />
   <link rel="stylesheet" href="./assets/styles/style.css" />
-
+  <script src="./assets/js/httpClient.js"></script>
 </head>
-
 <body>
-  <div class="main-cover">
-    <div>
-      <img
-        src="https://images.unsplash.com/photo-1616530940355-351fabd9524b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1935&q=80"
-        alt="" class="main-cover__image" />
+  <div class="container">
+    <!-- Header -->
+    <div class="header-container">
+      <a href="#" target="_blank" rel="noopener noreferrer" class="header-menu__link">COMMING SOON</a>
+      <a href="#" target="_blank" rel="noopener noreferrer" class="header-menu__link">TOP 100</a>
     </div>
-    <div class="main-cover__content">
-      <h1 class="main-cover__title">Tus actores favoritos</h1>
-      <p class="main-cover__subtitle">Busca a tus actores favoritos</p>
-      <div class="search-input-container">
-        <input id="query" class="input-text" type="text" />
-        <button id="searchbtn" class="button">Buscar</button>
-      </div>
+    <div id="componentListMovies" class="container-movies">
     </div>
   </div>
-
-  <script src="./assets/js/app.js"></script>
+  <script src="./assets/js/results.js"></script>
 </body>
 
 </html>
