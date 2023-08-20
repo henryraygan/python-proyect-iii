@@ -269,8 +269,9 @@ const mountCastListComponent = (element, cast) => {
 };
 
 const mountPosterComponent = (element, image, alt = "") => {
-  document.getElementById(element).innerHTML = `
-    <img class="poster-image" src="${image}" alt="${alt}" loading="lazy">`;
+  document.getElementById(
+    element
+  ).innerHTML = `<img class="poster-image" src="${image}" alt="${alt}" loading="lazy">`;
 };
 
 const mountDescriptionComponent = (

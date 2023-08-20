@@ -269,7 +269,7 @@ body {
   z-index: -1;
 }
 
-.movie-detail__content {
+.page-movie {
   background-color: rgba(0, 0, 0, 0.92);
   padding-top: 3rem;
   padding-bottom: 3rem;
@@ -281,26 +281,40 @@ body {
 .movie {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
-  gap: 2rem;
+  grid-template-rows: repeat(5, 20vh);
+  flex-direction: column;
+  gap: 3rem;
   border-radius: 0.25rem;
   margin-top: -35rem;
   grid-auto-rows: auto;
 }
 
-.movie-heading {
-  align-self: flex-start; /* Alinea el movie-heading en la parte superior */
+.movie-video {
+  margin-bottom: 5rem;
+  height: max-content;
+  width: 100%;
+  position: relative;
+  grid-row: 2;
 }
 
 .movie-poster {
-  width: 100%;
-  grid-column: 1 / 6;
+  grid-column: 1 / 5;
+  height: 100%;
+  grid-row: span 3;
 }
 
-.movie-heading,
-.movie-about,
-.movie-cast,
 .movie-video {
-  grid-column: 6 / -1;
+  grid-column: 1 / 5;
+  grid-row: 4;
+}
+
+.movie-content {
+  grid-column: 5 / -1;
+}
+
+.video-js {
+  width: 100%; /* Ajustar al 100% del contenedor */
+  height: 100%; /* Mantener la proporción original del video */
 }
 
 .movie-clasification {
