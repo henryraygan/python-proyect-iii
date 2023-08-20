@@ -9,18 +9,18 @@ const _helpers = (() => {
 
   helper.formatDate = (dateString) => {
     const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "JAN",
+      "FEB",
+      "MAR",
+      "APR",
+      "MAY",
+      "JUNE",
+      "JULY",
+      "AUG",
+      "SEPT",
+      "OCT",
+      "NOV",
+      "DEC",
     ];
 
     const parts = dateString.split("-");
@@ -28,7 +28,7 @@ const _helpers = (() => {
     const monthIndex = parseInt(parts[1]) - 1;
     const year = parseInt(parts[0]);
 
-    const formattedDate = `${day} of ${months[monthIndex]}, ${year}`;
+    const formattedDate = `${months[monthIndex]} ${day}, ${year}`;
     return formattedDate;
   };
 

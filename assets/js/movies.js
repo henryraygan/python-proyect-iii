@@ -122,6 +122,7 @@ const getHighestQualityVideo = (videoArray) => {
 
 async function LoadMovie() {
   try {
+    _components.showLoadingBar();
     const full_movie = await _movieService.getMovie(_tconst);
     const credits = await _movieService.getMovieCredits(_tconst);
     const videos = await _movieService.getMovieVideos(_tconst);
@@ -139,6 +140,7 @@ async function LoadMovie() {
       duration,
       description,
     } = getMovieData(full_movie);
+    _components.hideLoadingBar();
 
     return {
       title,
@@ -155,42 +157,48 @@ async function LoadMovie() {
       video: topVideo,
     };
   } catch (error) {
+    _components.hideLoadingBar();
     _helpers.handleErrors(error);
+  } finally {
+    _components.hideLoadingBar();
   }
 }
 
-LoadMovie()
-  .then(($movie) => {
-    const {
-      title,
-      certificate,
-      duration,
-      description,
-      genres,
-      image,
-      rating,
-      year,
-      authors,
-      cover,
-      cast,
-      video,
-    } = $movie;
+document.addEventListener("DOMContentLoaded", () => {
+  LoadMovie()
+    .then(($movie) => {
+      const {
+        title,
+        certificate,
+        duration,
+        description,
+        genres,
+        image,
+        rating,
+        year,
+        authors,
+        cover,
+        cast,
+        video,
+      } = $movie;
 
-    document.title = title;
+      document.title = title;
 
-    _components.mountHeaderComponent("headerComponent", cover);
-    _components.mountHeadingComponent("movieHeadComponent", { title, year });
-    _components.mountCastListComponent("castComponent", cast);
-    _components.mountPosterComponent("posterComponent", image);
-    _components.mountVideoComponent("videoComponent", video);
-    _components.mountDescriptionComponent("descriptionComponent", {
-      rating,
-      certificate,
-      authors,
-      duration,
-      description,
+      _components.mountHeaderComponent("headerComponent", cover);
+      _components.mountHeadingComponent("movieHeadComponent", { title, year });
+      _components.mountCastListComponent("castComponent", cast);
+      _components.mountPosterComponent("posterComponent", image);
+      _components.mountVideoComponent("videoComponent", video);
+      _components.mountListGenres("genresComponent", genres);
+      _components.mountDescriptionComponent("descriptionComponent", {
+        rating,
+        certificate,
+        authors,
+        duration,
+        description,
+      });
+    })
+    .catch((error) => {
+      _helpers.handleErrors(error);
     });
-  })
-  .catch((error) => {
-    _helpers.handleErrors(error);
-  });
+});

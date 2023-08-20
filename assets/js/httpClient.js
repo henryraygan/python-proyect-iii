@@ -3,9 +3,10 @@ const _httpClient = (() => {
   const URL_BASE = "https://online-movie-database.p.rapidapi.com";
   const API_KEY_HOLA = "f3c6a13161msh989af510ef88749p146258jsn6836805cdb25";
   const API_KEY_JDEV = "868ecb7370msh9014ccdf69ea8bcp1ab96cjsn45b67ec41e52";
+  const API_KEY = API_KEY_HOLA;
   const API_HOST = "online-movie-database.p.rapidapi.com";
   const defaultHeaders = new Headers({
-    "X-RapidAPI-Key": API_KEY_HOLA,
+    "X-RapidAPI-Key": API_KEY,
     "X-RapidAPI-Host": API_HOST,
   });
 

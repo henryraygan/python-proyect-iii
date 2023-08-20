@@ -118,23 +118,14 @@ const _components = (() => {
     const { cover, mimeType, playUrl } = video;
 
     document.getElementById(element).innerHTML = `
+    <h3 class="movie-description__subtitle">Trailer</h3>
     <video
-      class="video-js vjs-theme-city"
+      class="video-trailer"
       controls
       preload="auto"
-      width="640"
-      height="264"
       poster="${cover}"
-      data-setup="{}"
     >
       <source src="${playUrl}" type="${mimeType}" />
-      <p class="vjs-no-js">
-        To view this video please enable JavaScript, and consider upgrading to a
-        web browser that
-        <a href="https://videojs.com/html5-video-support/" target="_blank"
-          >supports HTML5 video</a
-        >
-      </p>
     </video>`;
   };
 
@@ -183,30 +174,57 @@ const _components = (() => {
     });
   };
 
-  components.mountListAutocomplete = (element, items) => {
+  components.mountListAutocomplete = (element, inputRef, items) => {
     const { d } = items;
-    const u = document.getElementById(element);
+    const containerResults = document.getElementById(element);
+    const input = document.getElementById(inputRef);
 
-    // Filtrar elementos con qid igual a "movie"
+    input.addEventListener("focus", () => {
+      containerResults.classList.add("open");
+    });
+
     const movieItems = d.filter((item) => item.qid === "movie");
 
     if (movieItems.length === 0) {
-      u.innerHTML = "No se encontraron películas.";
+      containerResults.innerHTML = "No se encontraron películas.";
       return;
     }
 
-    movieItems.forEach(({ i: imageUrl, s, y, id }) => {
-      u.innerHTML += `<li class="search-list-results__item">
+    containerResults.classList.add("open");
+    movieItems.forEach(({ i: imageUrl, l, s, y, id }) => {
+      containerResults.innerHTML += `<li>
       <a href="movie.html?id=${id}">
-        <img class="search-list-results__poster"
+      <div class="search-list-results__item">
+      <img class="search-list-results__poster"
           src="${imageUrl.imageUrl}"
-          alt="">
-        <p class="search-list-results__label">
-          ${s}, ${y}
-        </p>
+          alt="${l}">
+        <span>
+          <h2>${l}</h2>
+          <p class="search-list-results__label">${s}, ${y}</p>
+        </span>
+      </div>
       </a>
     </li>`;
     });
+  };
+
+  components.mountListGenres = (element, items) => {
+    items.forEach((item) => {
+      document.getElementById(
+        element
+      ).innerHTML += `<p class="genre-item">${item}</p>`;
+    });
+  };
+  components.showLoadingBar = () => {
+    const loadingBar = document.getElementById("loadingBar");
+    loadingBar.style.width = "0";
+    loadingBar.style.opacity = "1";
+  };
+
+  components.hideLoadingBar = () => {
+    const loadingBar = document.getElementById("loadingBar");
+    loadingBar.style.width = "100%";
+    loadingBar.style.opacity = "0";
   };
 
   return components;

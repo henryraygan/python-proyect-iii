@@ -126,7 +126,7 @@ body {
   display: flex;
   justify-content: space-around;
   margin: 2rem 0;
-  margin-top: 6rem;
+  margin-top: 1rem;
   align-items: center;
   background-color: #fff;
   padding: 0 1rem;
@@ -252,16 +252,17 @@ body {
   min-height: 100vh;
 }
 
-.movie-header__background {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-  z-index: 1;
+.movie-header {
+  position: relative;
+  height: 60vh;
 }
 
-.movie-header {
+.movie-header__background {
   position: absolute;
-  height: 50rem;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
 }
 
 .movie-header::before {
@@ -278,7 +279,6 @@ body {
 
 .page-movie__content {
   position: relative;
-  padding-top: 20rem;
   min-height: 100vh;
   height: max-content;
   z-index: 3;
@@ -286,39 +286,40 @@ body {
 
 .movie {
   display: grid;
-  grid-template-columns: repeat(12, 1fr);
-  grid-template-rows: repeat(5, 20vh);
+  grid-template-columns: 2fr 4fr;
   gap: 3rem;
   border-radius: 0.25rem;
   grid-auto-rows: auto;
 }
 
-.movie-video {
-  margin-bottom: 5rem;
-  height: max-content;
+.movie-wall {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.video-trailer {
   width: 100%;
-  position: relative;
-  grid-row: 2;
-}
-
-.movie-poster {
-  grid-column: 1 / 5;
   height: 100%;
-  grid-row: span 3;
 }
 
-.movie-video {
-  grid-column: 1 / 5;
-  grid-row: 4;
+.movie-genres {
+  display: inline-flex;
+  flex-wrap: wrap;
+  position: relative;
+  margin-top: 1rem;
 }
-
-.movie-content {
-  grid-column: 5 / -1;
-}
-
-.video-js {
-  width: 100%; /* Ajustar al 100% del contenedor */
-  height: 100%; /* Mantener la proporción original del video */
+.genre-item {
+  padding: 0.25rem 1rem;
+  color: rgb(255, 255, 255);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 1em;
+  font-weight: bold;
+  margin-right: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0;
+  align-self: center;
+  text-align: center;
 }
 
 .movie-clasification {
@@ -425,11 +426,12 @@ body {
 }
 
 .nav-search {
+  --globalnav-backdrop-filter: saturate(180%) blur(20px);
+  --globalnav-background: rgba(0, 0, 0, 0.8);
   background-color: rgb(26, 26, 26);
-  position: fixed;
   width: 100%;
-  top: 0;
   padding: 1rem 0;
+  background: var(--globalnav-background);
 }
 
 .input-search,
@@ -449,49 +451,45 @@ body {
 
 .search-list-results {
   position: absolute;
-
-  display: grid;
+  display: none;
   grid-template-columns: repeat(3, 1fr);
   gap: 2rem;
-
   width: 100%;
   margin-top: 1.2rem;
-  padding: 1rem;
+  padding: 3rem 1rem;
   border-radius: 0.25rem;
-
   list-style-type: none;
-  transition: opacity 75ms linear, transform 0.15s ease-in;
-  transform: scale(1);
-
-  opacity: 0;
+  transition: display 75ms linear;
+  max-height: 50vh;
+  overflow: hidden;
   background-color: rgb(31, 31, 31);
   box-shadow: 0 11px 15px -7px rgba(0, 0, 0, 0.2),
     0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12);
 }
 
-.search-container .search-list-results {
-  display: none;
-}
-
-/* Mostrar resultados cuando el input está enfocado */
-.search-container .input-search:focus + .search-list-results {
+.search-list-results.open {
   display: grid;
-  opacity: 1;
-  max-height: 50vh;
-  overflow: hidden;
   overflow-y: auto;
+  z-index: 10000;
 }
 
 .search-list-results__label {
   color: #fff;
+  font-size: 0.75rem;
+  margin-top: 0.25rem;
 }
 
 .search-list-results__item a {
   display: grid;
-  grid-template-columns: 1fr 2fr;
+  grid-template-columns: 1fr 3fr;
+  color: #fff;
 }
 .search-list-results__item {
   width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  color: #fff;
+  gap: 0.15rem;
 }
 .search-list-results__item a:hover  {
   background-color: rgba(0, 0, 0, 0.08);
@@ -499,6 +497,17 @@ body {
 .search-list-results__poster {
   width: 100px;
   height: auto;
+}
+
+.loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #007bff; /* Color azul como YouTube */
+  z-index: 9999;
+  transition: width 0.3s ease-in-out;
 }
 
 @media (max-width: 992px) {

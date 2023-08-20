@@ -6,21 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie</title>
     <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet" />
-    <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet" />
-    <link href="https://unpkg.com/@videojs/themes@1/dist/city/index.css" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles/style.css" />
 </head>
 
 <body>
+    <div class="loading-bar" id="loadingBar"></div>
+    <nav class="nav-search">
+        <div class="container">
+            <div class="search-container">
+                <input type="text" id="inputSearch" placeholder="Buscar película" class="input-search">
+                <ul class="search-list-results" id="searchListComponent">
+                </ul>
+            </div>
+        </div>
+    </nav>
+
     <div class="page-movie">
         <div id="headerComponent" class="movie-header"></div>
         <div class="page-movie__content">
             <div class="container">
                 <div class="movie">
-                    <div class="movie-poster" id="posterComponent"></div>
-                    <div class="movie-video" id="videoComponent"></div>
+                    <div class="movie-wall">
+                        <div class="movie-poster" id="posterComponent"></div>
+                        <div class="movie-video" id="videoComponent"></div>
+                    </div>
                     <div class="movie-content">
                         <div class="movie-heading" id="movieHeadComponent"></div>
+                        <div class="movie-genres" id="genresComponent"></div>
                         <div class="movie-about" id="descriptionComponent"></div>
                         <div class="movie-cast" id="castComponent"></div>
                     </div>
@@ -29,14 +41,21 @@
         </div>
 
     </div>
+    <footer>
+        <div class="container">
+            <h6 style="color: aliceblue; padding: 10rem 0; text-align: center;">
+                Powered by <a target="_blank" href="https://rapidapi.com/apidojo/api/online-movie-database">Online Movie
+                    Database</a>
+            </h6>
+        </div>
+    </footer>
 
-
-    <script src="//vjs.zencdn.net/8.5.2/video.min.js"></script>
     <script src="./assets/js/helpers.js"></script>
     <script src="./assets/js/components.js"></script>
     <script src="./assets/js/httpClient.js"></script>
-    <script src="./assets/js/api.service.js"></script>
+    <script src="./assets/js/movie.service.js"></script>
     <script src="./assets/js/movies.js"></script>
+    <script src="./assets/js/app.js"></script>
 </body>
 
 </html>
