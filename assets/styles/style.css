@@ -288,7 +288,6 @@ body {
   display: grid;
   grid-template-columns: repeat(12, 1fr);
   grid-template-rows: repeat(5, 20vh);
-  flex-direction: column;
   gap: 3rem;
   border-radius: 0.25rem;
   grid-auto-rows: auto;

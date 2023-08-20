@@ -80,7 +80,9 @@ const getCoverMovie = (vi) => {
 
 const getTopVideo = async (videos) => {
   const { topVideos } = videos;
-  const urlVideo = await API.getVideosLinks(topVideos[0].id.split("/")[2]);
+  const urlVideo = await _movieService.getVideosLinks(
+    topVideos[0].id.split("/")[2]
+  );
   const { definition, mimeType, playUrl } = getHighestQualityVideo(
     urlVideo.resource.encodings
   );
@@ -118,50 +120,11 @@ const getHighestQualityVideo = (videoArray) => {
   return highestQualityVideo;
 };
 
-const API = {
-  getMovie: async (nm) => {
-    return _httpClient.cache(
-      _httpClient.ENDPOINT.title.overview_details,
-      { tconst: nm },
-      "movie"
-    );
-  },
-  getMovieCredits: async (nm) => {
-    return _httpClient.cache(
-      _httpClient.ENDPOINT.title.full_credits,
-      { tconst: nm },
-      "credits"
-    );
-  },
-  getMovieVideos: async (nm) => {
-    return _httpClient.cache(
-      _httpClient.ENDPOINT.title.movie_videos,
-      {
-        tconst: nm,
-        currentCountry: "US",
-        purchaseCountry: "US",
-      },
-      "movieVideos"
-    );
-  },
-  getVideosLinks: async (vi_id) => {
-    try {
-      return _httpClient.cache(
-        _httpClient.ENDPOINT.title.video,
-        { viconst: vi_id },
-        "videoLinks"
-      );
-    } catch (error) {
-      _helpers.handleErrors(error);
-    }
-  },
-};
-
 async function LoadMovie() {
   try {
-    const full_movie = await API.getMovie(_tconst);
-    const credits = await API.getMovieCredits(_tconst);
-    const videos = await API.getMovieVideos(_tconst);
+    const full_movie = await _movieService.getMovie(_tconst);
+    const credits = await _movieService.getMovieCredits(_tconst);
+    const videos = await _movieService.getMovieVideos(_tconst);
     const topVideo = await getTopVideo(videos);
     const cover = getCoverMovie(videos);
     const { authors, cast } = getInfoCredits(credits);
@@ -215,12 +178,12 @@ LoadMovie()
 
     document.title = title;
 
-    mountHeaderComponent("headerComponent", cover);
-    mountHeadingComponent("movieHeadComponent", { title, year });
-    mountCastListComponent("castComponent", cast);
-    mountPosterComponent("posterComponent", image);
-    mountVideoComponent("videoComponent", video);
-    mountDescriptionComponent("descriptionComponent", {
+    _components.mountHeaderComponent("headerComponent", cover);
+    _components.mountHeadingComponent("movieHeadComponent", { title, year });
+    _components.mountCastListComponent("castComponent", cast);
+    _components.mountPosterComponent("posterComponent", image);
+    _components.mountVideoComponent("videoComponent", video);
+    _components.mountDescriptionComponent("descriptionComponent", {
       rating,
       certificate,
       authors,
@@ -231,134 +194,3 @@ LoadMovie()
   .catch((error) => {
     _helpers.handleErrors(error);
   });
-
-const mountHeaderComponent = (element, urlImage, alt = "") => {
-  document.getElementById(
-    element
-  ).innerHTML = `<img class="movie-header__background"
-  src="${urlImage}"
-  alt="${alt}" loading="lazy">`;
-};
-
-const mountCastListComponent = (element, cast) => {
-  const el = document.getElementById(element);
-  if (!cast || !Array.isArray(cast) || cast.length === 0) {
-    return `<div class="movie-cast" id="castComponent">
-              <h3 class="movie-description__subtitle">Cast</h3>
-              <p>No cast information available.</p>
-            </div>`;
-  }
-
-  const castHTML = cast
-    .map(
-      (actor) => `
-    <div class="cast">
-        <img class="cast-photo" src="${
-          actor.image || "./assets/images/no-image.webp"
-        }" alt="${actor.name}" loading="lazy">
-        <p class="cast-name-actor">${actor.name}</p> as
-        <span class="cast-name-character">${actor.character}</span>
-    </div>`
-    )
-    .join("");
-
-  el.innerHTML = `<div class="movie-cast" id="castComponent">
-  <h3 class="movie-description__subtitle">Cast</h3>
-  <div class="cast-list">${castHTML}</div>
-</div>`;
-};
-
-const mountPosterComponent = (element, image, alt = "") => {
-  document.getElementById(
-    element
-  ).innerHTML = `<img class="poster-image" src="${image}" alt="${alt}" loading="lazy">`;
-};
-
-const mountDescriptionComponent = (
-  element,
-  { rating, certificate, description, authors: { director, writer }, duration }
-) => {
-  let html = "";
-
-  // Add movie classification and rating if available
-  if (certificate) {
-    html += `
-      <div class="movie-description__extra">
-        <span class="movie-clasification">${certificate}</span>`;
-    if (rating) {
-      html += `
-        <span class="movie-rating">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-              class="ipc-icon ipc-icon--star sc-bde20123-4 ggvDm" viewBox="0 0 24 24"
-              fill="currentColor" role="presentation">
-              <path
-                  d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z">
-              </path>
-          </svg>
-          ${rating} / 10
-        </span>`;
-    }
-    html += `
-      </div>`;
-  }
-
-  // Add director, writer, and duration if available
-  if (director || writer || duration) {
-    html += `
-      <p id="authorComponent" class="movie-credits">`;
-    if (director) {
-      html += `
-        <span>Director: <strong>${director}</strong></span><br>`;
-    }
-    if (writer) {
-      html += `
-        <span>Writer: <strong>${writer}</strong></span><br>`;
-    }
-    if (duration) {
-      html += `
-        <span>Duration: <strong>${duration}</strong></span>`;
-    }
-    html += `
-      </p>`;
-  }
-
-  // Add description if available
-  if (description) {
-    html += `
-      <p class="movie-paragraph">${description}</p>`;
-  }
-
-  document.getElementById(element).innerHTML = html;
-};
-
-const mountHeadingComponent = (element, { title, year }) => {
-  document.getElementById(
-    element
-  ).innerHTML = `<h1 class="movie-description__title">
-  ${title} (${year})
-</h1>`;
-};
-
-const mountVideoComponent = (element, video) => {
-  const { cover, mimeType, playUrl } = video;
-
-  document.getElementById(element).innerHTML = `
-  <video
-    class="video-js vjs-theme-city"
-    controls
-    preload="auto"
-    width="640"
-    height="264"
-    poster="${cover}"
-    data-setup="{}"
-  >
-    <source src="${playUrl}" type="${mimeType}" />
-    <p class="vjs-no-js">
-      To view this video please enable JavaScript, and consider upgrading to a
-      web browser that
-      <a href="https://videojs.com/html5-video-support/" target="_blank"
-        >supports HTML5 video</a
-      >
-    </p>
-  </video>`;
-};
