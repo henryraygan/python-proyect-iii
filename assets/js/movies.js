@@ -1,10 +1,6 @@
 const URL_PARAMS = new URLSearchParams(window.location.search);
 const _tconst = URL_PARAMS.get("id");
 
-const handleErrors = (error) => {
-  console.error("An error occurred:", error);
-};
-
 const getAuthors = (crew) => {
   if (!crew) {
     return {
@@ -75,7 +71,6 @@ const getMovieData = (movieData) => {
 
 const getCoverMovie = (vi) => {
   const { heroImages } = vi;
-  console.log(heroImages);
   if (heroImages.length === 0) {
     return "./assets/images/no-cover.jpg";
   }
@@ -102,52 +97,48 @@ const getHighestQualityVideo = (videoArray) => {
 
   for (const video of videoArray) {
     if (video.mimeType === "video/mp4") {
+      const definition = video.definition.split("p")[0];
+
+      // Convertir definiciones no numéricas a valores equivalentes
+      const definitionValue = isNaN(definition)
+        ? definition === "SD"
+          ? 480
+          : definition === "HD"
+          ? 720
+          : 1080
+        : parseInt(definition);
+
       if (
         !highestQualityVideo ||
-        (video.definition && video.definition > highestQualityVideo.definition)
+        definitionValue > highestQualityVideo.definition
       ) {
         highestQualityVideo = video;
+        highestQualityVideo.definition = definitionValue;
       }
     }
   }
+  console.log(highestQualityVideo);
 
   return highestQualityVideo;
 };
 
-const getFromLocalStorageOrApi = async (endpoint, params, cacheType) => {
-  const cacheKey = JSON.stringify(params) + cacheType;
-
-  const cachedData = localStorage.getItem(cacheKey);
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
-
-  try {
-    const data = await _httpClient.get(endpoint, params);
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-    return data;
-  } catch (error) {
-    handleErrors(error);
-  }
-};
-
 const API = {
   getMovie: async (nm) => {
-    return getFromLocalStorageOrApi(
+    return _httpClient.cache(
       _httpClient.ENDPOINT.title.overview_details,
       { tconst: nm },
       "movie"
     );
   },
   getMovieCredits: async (nm) => {
-    return getFromLocalStorageOrApi(
+    return _httpClient.cache(
       _httpClient.ENDPOINT.title.full_credits,
       { tconst: nm },
       "credits"
     );
   },
   getMovieVideos: async (nm) => {
-    return getFromLocalStorageOrApi(
+    return _httpClient.cache(
       _httpClient.ENDPOINT.title.movie_videos,
       {
         tconst: nm,
@@ -159,13 +150,13 @@ const API = {
   },
   getVideosLinks: async (vi_id) => {
     try {
-      return getFromLocalStorageOrApi(
+      return _httpClient.cache(
         _httpClient.ENDPOINT.title.video,
         { viconst: vi_id },
         "videoLinks"
       );
     } catch (error) {
-      console.error(error);
+      _helpers.handleErrors(error);
     }
   },
 };
@@ -205,7 +196,7 @@ async function LoadMovie() {
       video: topVideo,
     };
   } catch (error) {
-    handleErrors(error);
+    _helpers.handleErrors(error);
   }
 }
 
@@ -240,11 +231,9 @@ LoadMovie()
       duration,
       description,
     });
-
-    console.log($movie);
   })
   .catch((error) => {
-    console.error(error);
+    _helpers.handleErrors(error);
   });
 
 const mountHeaderComponent = (element, urlImage, alt = "") => {
@@ -252,7 +241,7 @@ const mountHeaderComponent = (element, urlImage, alt = "") => {
     element
   ).innerHTML = `<img class="movie-header__background"
   src="${urlImage}"
-  alt="${alt}">`;
+  alt="${alt}" loading="lazy">`;
 };
 
 const mountCastListComponent = (element, cast) => {
@@ -270,7 +259,7 @@ const mountCastListComponent = (element, cast) => {
     <div class="cast">
         <img class="cast-photo" src="${
           actor.image || "./assets/images/no-image.webp"
-        }" alt="${actor.name}">
+        }" alt="${actor.name}" loading="lazy">
         <p class="cast-name-actor">${actor.name}</p> as
         <span class="cast-name-character">${actor.character}</span>
     </div>`
@@ -285,7 +274,7 @@ const mountCastListComponent = (element, cast) => {
 
 const mountPosterComponent = (element, image, alt = "") => {
   document.getElementById(element).innerHTML = `
-    <img class="poster-image" src="${image}" alt="${alt}">`;
+    <img class="poster-image" src="${image}" alt="${alt}" loading="lazy">`;
 };
 
 const mountDescriptionComponent = (
@@ -355,10 +344,24 @@ const mountHeadingComponent = (element, { title, year }) => {
 
 const mountVideoComponent = (element, video) => {
   const { cover, mimeType, playUrl } = video;
+
   document.getElementById(element).innerHTML = `
-    <h3 class="movie-description__subtitle">Trailer</h3>
-    <video class="movie-trailer" controls poster="${cover}">
-      <source src="${playUrl}" type="${mimeType}" />
-      Tu navegador no admite el elemento <code>video</code>.
-    </video>`;
+  <video
+    class="video-js vjs-theme-city"
+    controls
+    preload="auto"
+    width="640"
+    height="264"
+    poster="${cover}"
+    data-setup="{}"
+  >
+    <source src="${playUrl}" type="${mimeType}" />
+    <p class="vjs-no-js">
+      To view this video please enable JavaScript, and consider upgrading to a
+      web browser that
+      <a href="https://videojs.com/html5-video-support/" target="_blank"
+        >supports HTML5 video</a
+      >
+    </p>
+  </video>`;
 };

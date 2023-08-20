@@ -1,36 +1,15 @@
 const menuContainer = document.querySelector(".header-container");
 
-const handleErrors = (error) => {
-  console.error("An error occurred:", error);
-};
-
-const getFromLocalStorageOrApi = async (endpoint, params, cacheType) => {
-  const cacheKey = JSON.stringify(params) + cacheType;
-  const cachedData = localStorage.getItem(cacheKey);
-
-  if (cachedData) {
-    return JSON.parse(cachedData);
-  }
-
-  try {
-    const data = await _httpClient.get(endpoint, params);
-    localStorage.setItem(cacheKey, JSON.stringify(data));
-    return data;
-  } catch (error) {
-    handleErrors(error);
-  }
-};
-
 const API = {
-  getResults: async (nm) => {
-    return getFromLocalStorageOrApi(
+  autoComplete: async (nm) => {
+    return _httpClient.cache(
       _httpClient.ENDPOINT.autoComplete,
-      { q: q_param },
+      { q: nm },
       "results"
     );
   },
   getTopCast: async () => {
-    return getFromLocalStorageOrApi(
+    return _httpClient.cache(
       _httpClient.ENDPOINT.title.popularMovies,
       {
         homeCountry: "US",
@@ -41,7 +20,7 @@ const API = {
     );
   },
   getCoomingSoon: async () => {
-    return getFromLocalStorageOrApi(
+    return _httpClient.cache(
       _httpClient.ENDPOINT.title.coomingMovies,
       {},
       "cooming"
@@ -49,7 +28,7 @@ const API = {
   },
   getMovieDetails: async (movieId) => {
     const params = { tconst: movieId };
-    return await getFromLocalStorageOrApi(
+    return await _httpClient.cache(
       _httpClient.ENDPOINT.title.movieDetails,
       params,
       "moviedetail"
@@ -62,6 +41,12 @@ const loadMoviesPosters = async (list, size) => {
     list.slice(0, size).map(async (e) => {
       const id = e.id.split("/")[2];
       const movie = await API.getMovieDetails(id);
+      if (e?.chartRating) {
+        movie.chartRating = e.chartRating;
+      }
+      if (e?.releaseDate) {
+        movie.releaseDate = e.releaseDate;
+      }
       return movie;
     })
   );
@@ -69,26 +54,37 @@ const loadMoviesPosters = async (list, size) => {
 };
 
 const mountListMoviesComponent = (element, movies) => {
+  document.getElementById(element).innerHTML = "";
   movies.forEach((item) => {
     const {
       image: { url },
       title,
       id,
+      releaseDate,
+      chartRating,
       year,
       runningTimeInMinutes,
     } = item;
-
+    let titleInfo = title;
+    if (releaseDate) {
+      titleInfo += `, ${_helpers.formatDate(releaseDate)}`;
+    } else if (chartRating) {
+      titleInfo += `, ${chartRating}`;
+    } else {
+      titleInfo += `, ${year}`;
+    }
     const movieHTML = `
       <div class="img-movie__container">
         <div>
-          <img src="${url}" alt="${title}" class="img-movie__ticket" />
+          <img src="${url}" alt="${title}" class="img-movie__ticket"  loading="lazy"/>
         </div>
         <div>
           <div>
-            <h3 class="img-movie__title">${title}, ${year}</h3>
-            <p class="img-movie__text">${_helpers.formatDuration(
-              runningTimeInMinutes
-            )}</p>
+            <h3 class="img-movie__title">
+             ${titleInfo}
+            </h3>
+            <p class="img-movie__text">
+            ${_helpers.formatDuration(runningTimeInMinutes)}</p>
             <a href="movie.html?id=${
               id.split("/")[2]
             }" class="img-movie__link">Información</a>
@@ -96,8 +92,33 @@ const mountListMoviesComponent = (element, movies) => {
         </div>
       </div>
     `;
-
     document.getElementById(element).insertAdjacentHTML("beforeend", movieHTML);
+  });
+};
+
+const mountListAutocomplete = (element, items) => {
+  const { d } = items;
+  const u = document.getElementById(element);
+
+  // Filtrar elementos con qid igual a "movie"
+  const movieItems = d.filter((item) => item.qid === "movie");
+
+  if (movieItems.length === 0) {
+    u.innerHTML = "No se encontraron películas.";
+    return;
+  }
+
+  movieItems.forEach(({ i: imageUrl, s, y, id }) => {
+    u.innerHTML += `<li class="search-list-results__item">
+    <a href="movie.html?id=${id}">
+      <img class="search-list-results__poster"
+        src="${imageUrl.imageUrl}"
+        alt="">
+      <p class="search-list-results__label">
+        ${s}, ${y}
+      </p>
+    </a>
+  </li>`;
   });
 };
 
@@ -108,7 +129,7 @@ menuContainer.addEventListener("click", async (event) => {
       const listMovies = await LoadMovie(dataTriggerValue);
       mountListMoviesComponent("componentListMovies", listMovies);
     } catch (error) {
-      console.error(error);
+      _helpers.handleErrors(error);
     }
   }
 });
@@ -120,7 +141,7 @@ async function LoadMovie(type = "cooming") {
     const movies = await loadMoviesPosters(list, 9);
     return movies;
   } catch (error) {
-    handleErrors(error);
+    _helpers.handleErrors(error);
   }
 }
 
@@ -129,5 +150,49 @@ LoadMovie("cooming")
     mountListMoviesComponent("componentListMovies", $listMovies);
   })
   .catch((error) => {
-    console.error(error);
+    _helpers.handleErrors(error);
   });
+
+const searchCache = {
+  data: {},
+  get: (key) => searchCache.data[key],
+  set: (key, value) => {
+    searchCache.data[key] = value;
+    localStorage.setItem("searchCache", JSON.stringify(searchCache.data));
+  },
+  init: () => {
+    const cachedData = localStorage.getItem("searchCache");
+    if (cachedData) {
+      searchCache.data = JSON.parse(cachedData);
+    }
+  },
+};
+
+searchCache.init();
+
+const input = document.getElementById("inputSearch");
+const message = document.getElementById("searchListComponent");
+let typingTimer;
+const doneTypingInterval = 1000;
+
+const doneTyping = async () => {
+  let items = [];
+
+  const searchTerm = input.value;
+  const cachedResult = searchCache.get(searchTerm);
+
+  if (cachedResult) {
+    items = cachedResult;
+  } else {
+    items = await API.autoComplete(searchTerm);
+    searchCache.set(searchTerm, items);
+    result = cachedResult;
+  }
+
+  mountListAutocomplete("searchListComponent", items);
+};
+
+input.addEventListener("input", () => {
+  clearTimeout(typingTimer);
+  typingTimer = setTimeout(doneTyping, doneTypingInterval);
+});

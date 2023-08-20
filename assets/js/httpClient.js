@@ -70,5 +70,22 @@ const _httpClient = (() => {
     });
   };
 
+  api.cache = async (endpoint, params, cacheType) => {
+    const cacheKey = JSON.stringify(params) + cacheType;
+    const cachedData = localStorage.getItem(cacheKey);
+
+    if (cachedData) {
+      return JSON.parse(cachedData);
+    }
+
+    try {
+      const data = await api.get(endpoint, params); // Cambio aquí
+      localStorage.setItem(cacheKey, JSON.stringify(data));
+      return data;
+    } catch (error) {
+      handleErrors(error);
+    }
+  };
+
   return api;
 })();
