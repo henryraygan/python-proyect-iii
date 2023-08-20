@@ -98,8 +98,6 @@ const getHighestQualityVideo = (videoArray) => {
   for (const video of videoArray) {
     if (video.mimeType === "video/mp4") {
       const definition = video.definition.split("p")[0];
-
-      // Convertir definiciones no numéricas a valores equivalentes
       const definitionValue = isNaN(definition)
         ? definition === "SD"
           ? 480
@@ -113,11 +111,9 @@ const getHighestQualityVideo = (videoArray) => {
         definitionValue > highestQualityVideo.definition
       ) {
         highestQualityVideo = video;
-        highestQualityVideo.definition = definitionValue;
       }
     }
   }
-  console.log(highestQualityVideo);
 
   return highestQualityVideo;
 };
