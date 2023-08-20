@@ -1,6 +1,7 @@
 const menuContainer = document.querySelector(".header-container");
 
 const loadMoviesPosters = async (list, size) => {
+  console.log(list);
   const listMovies = await Promise.all(
     list.slice(0, size).map(async (e) => {
       const id = e.id.split("/")[2];

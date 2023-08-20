@@ -54,8 +54,6 @@ const _components = (() => {
     }
   ) => {
     let html = "";
-
-    // Add movie classification and rating if available
     if (certificate) {
       html += `
         <div class="movie-description__extra">
