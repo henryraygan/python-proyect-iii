@@ -21,12 +21,21 @@ const handleErrors = (error) => {
 
 const getAuthors = (crew) => {
   if (!crew) {
-    return {};
+    return {
+      writer: null,
+      director: null,
+    };
   }
+
   const { writer, director } = crew;
+
+  const writerName = writer && writer.length > 0 ? writer[0].name : null;
+  const directorName =
+    director && director.length > 0 ? director[0].name : null;
+
   return {
-    writer: writer[0]?.name || "N/A",
-    director: director[0]?.name || "N/A",
+    writer: writerName,
+    director: directorName,
   };
 };
 
@@ -46,46 +55,47 @@ const getInfoCredits = (credits) => {
     return {};
   }
   const { cast, crew } = credits;
+  console.log(cast);
+  console.log(crew);
   return {
-    cast: getMainCast(cast) || {},
-    authors: getAuthors(crew) || {},
+    cast: getMainCast(cast) || null,
+    authors: getAuthors(crew) || null,
   };
 };
 
 const getMovieData = (movieData) => {
   const {
     title: {
-      title,
-      image: { url },
-      year,
-    },
-    certificates: {
-      US: [{ certificate }],
-    },
-    ratings: { rating },
-    genres,
-    title: { runningTimeInMinutes: duration },
-    plotOutline: { text },
+      title = "N/A",
+      image: { url } = {},
+      year = "N/A",
+      runningTimeInMinutes: duration = "N/A",
+    } = {},
+    certificates: { US: [{ certificate } = {}] = [] } = {},
+    ratings: { rating } = {},
+    genres = [],
+    plotOutline: { text } = {},
   } = movieData;
+
   return {
     title,
     year,
     image: url || "",
-    certificate,
-    rating,
+    certificate: certificate || "N/A",
+    rating: rating || "N/A",
     genres,
     duration: formatDuration(duration),
-    description: text,
+    description: text || "",
   };
 };
 
 const getCoverMovie = (vi) => {
   const { heroImages } = vi;
   if (heroImages.length === 0) {
-    return null;
+    return "./assets/images/no-cover.jpg";
   }
   const randomPosition = Math.floor(Math.random() * heroImages.length);
-  return heroImages[randomPosition]?.url || null;
+  return heroImages[randomPosition]?.url || "./assets/images/no-cover.jpg";
 };
 
 const getTopVideo = async (videos) => {
@@ -232,8 +242,10 @@ LoadMovie()
     } = $movie;
 
     mountHeaderComponent("headerComponent", cover);
+    mountHeadingComponent("movieHeadComponent", { title, year });
     mountCastListComponent("castListComponent", cast);
-    mountPosterComponent("posterComponent", image, video);
+    mountPosterComponent("posterComponent", image);
+    mountVideoComponent("movieVideoComponent", video);
     mountDescriptionComponent("descriptionComponent", {
       title,
       year,
@@ -260,36 +272,25 @@ const mountHeaderComponent = (element, urlImage, alt = "") => {
 
 const mountCastListComponent = (element, cast) => {
   const el = document.getElementById(element);
-  cast.forEach((element) => {
+  if (!cast || !Array.isArray(cast) || cast.length === 0) {
+    el.innerHTML = "<p>No cast information available.</p>";
+    return;
+  }
+  cast.forEach((actor) => {
     el.innerHTML += `
     <div class="cast">
         <img class="cast-photo" src="${
-          element.image || "./assets/images/no-image.webp"
-        }" alt="${element.name}">
-        <p class="cast-name-actor">${element.name}</p> as
-        <span class="cast-name-character">${element.character}</span>
+          actor.image || "./assets/images/no-image.webp"
+        }" alt="${actor.name}">
+        <p class="cast-name-actor">${actor.name}</p> as
+        <span class="cast-name-character">${actor.character}</span>
     </div>`;
   });
 };
 
-const mountPosterComponent = (element, image, video, alt = "") => {
-  const { cover, mimeType, playUrl } = video;
+const mountPosterComponent = (element, image, alt = "") => {
   document.getElementById(element).innerHTML = `
-    <img class="poster-image" src="${image}" alt="${alt}">
-    <h3 class="movie-description__subtitle">Trailer</h3>
-    <video id="my-video" class="video-js movie-video" controls preload="auto"
-                        poster="${cover}"
-                        data-setup="{}">
-                        <source
-                            src="${playUrl}"
-                            type="${mimeType}" />
-                        <p class="vjs-no-js">
-                            To view this video please enable JavaScript, and consider upgrading to a
-                            web browser that
-                            <a href="https://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
-                        </p>
-                    </video>
-  `;
+    <img class="poster-image" src="${image}" alt="${alt}">`;
 };
 
 const mountDescriptionComponent = (element, data) => {
@@ -303,9 +304,6 @@ const mountDescriptionComponent = (element, data) => {
     duration,
   } = data;
   document.getElementById(element).innerHTML = `
-    <h1 class="movie-description__title">
-                                ${title} (${year})
-                            </h1>
                             <div class="movie-description__extra">
                                 <span class="movie-clasification">${certificate}</span>
                                 <span class="movie-rating">
@@ -329,4 +327,20 @@ const mountDescriptionComponent = (element, data) => {
                             </p>`;
 };
 
-const mountGendersComponent = (genders) => {};
+const mountHeadingComponent = (element, { title, year }) => {
+  document.getElementById(
+    element
+  ).innerHTML = `<h1 class="movie-description__title">
+  ${title} (${year})
+</h1>`;
+};
+
+const mountVideoComponent = (element, video) => {
+  const { cover, mimeType, playUrl } = video;
+  document.getElementById(element).innerHTML = `
+    <h3 class="movie-description__subtitle">Trailer</h3>
+    <video class="movie-trailer" controls poster="${cover}">
+      <source src="${playUrl}" type="${mimeType}" />
+      Tu navegador no admite el elemento <code>video</code>.
+    </video>`;
+};

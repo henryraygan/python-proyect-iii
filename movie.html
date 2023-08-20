@@ -7,8 +7,6 @@
     <title>Actors Details</title>
     <link href="https://fonts.cdnfonts.com/css/inter" rel="stylesheet" />
     <link rel="stylesheet" href="./assets/styles/style.css" />
-    <link href="https://vjs.zencdn.net/8.5.2/video-js.css" rel="stylesheet" />
-    <script src="https://vjs.zencdn.net/8.5.2/video.min.js"></script>
     <script src="./assets/js/httpClient.js"></script>
 </head>
 
@@ -17,10 +15,18 @@
     <div class="movie-detail__content">
         <div class="container">
             <div class="movie">
-                <div id="posterComponent" class="movie-img"></div>
-                <div class="movie-description">
+
+                <div class="movie-poster">
+                    <div id="posterComponent" class="movie-img"></div>
+                </div>
+                <div class="movie-video" id="movieVideoComponent">
+                </div>
+                <div class="movie-heading" id="movieHeadComponent"></div>
+                <div class="movie-about">
                     <div id="descriptionComponent">
                     </div>
+                </div>
+                <div class="movie-cast">
                     <h3 class="movie-description__subtitle">
                         Cast
                     </h3>
