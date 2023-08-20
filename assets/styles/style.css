@@ -567,6 +567,10 @@ body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
   }
+
+  .movie-content{
+    margin: 7rem 0;
+  }
  
   
 }
