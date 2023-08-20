@@ -143,7 +143,13 @@ const _components = (() => {
       if (releaseDate) {
         titleInfo += `, ${_helpers.formatDate(releaseDate)}`;
       } else if (chartRating) {
-        titleInfo += `, ${chartRating}`;
+        titleInfo += `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+        class="ipc-icon ipc-icon--star sc-bde20123-4 ggvDm" viewBox="0 0 24 24"
+        fill="currentColor" role="presentation">
+        <path
+            d="M12 17.27l4.15 2.51c.76.46 1.69-.22 1.49-1.08l-1.1-4.72 3.67-3.18c.67-.58.31-1.68-.57-1.75l-4.83-.41-1.89-4.46c-.34-.81-1.5-.81-1.84 0L9.19 8.63l-4.83.41c-.88.07-1.24 1.17-.57 1.75l3.67 3.18-1.1 4.72c-.2.86.73 1.54 1.49 1.08l4.15-2.5z">
+        </path>
+    </svg> ${chartRating}`;
       } else {
         titleInfo += `, ${year}`;
       }
@@ -152,7 +158,7 @@ const _components = (() => {
           <div>
             <img src="${url}" alt="${title}" class="img-movie__ticket"  loading="lazy"/>
           </div>
-          <div>
+          <div class="img-movie__wrap">
             <div>
               <h3 class="img-movie__title">
                ${titleInfo}
@@ -161,7 +167,7 @@ const _components = (() => {
               ${_helpers.formatDuration(runningTimeInMinutes)}</p>
               <a href="movie.html?id=${
                 id.split("/")[2]
-              }" class="img-movie__link">Información</a>
+              }" class="img-movie__link"><span class="icon-span"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" class="ipc-icon ipc-icon--play-arrow ipc-btn__icon ipc-btn__icon--pre" viewBox="0 0 24 24" fill="currentColor" role="presentation"><path d="M8 6.82v10.36c0 .79.87 1.27 1.54.84l8.14-5.18a1 1 0 0 0 0-1.69L9.54 5.98A.998.998 0 0 0 8 6.82z" class="icon-img"></path></svg></span>Información</a>
             </div>
           </div>
         </div>
