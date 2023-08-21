@@ -97,8 +97,9 @@ body {
 
 .header-menu__link {
   padding: 1.8rem 0;
-  border-bottom: 2px solid white; /* Color de borde y grosor inicial */
-  transition: border-bottom 0.8s ease; /* Propiedad de transición */
+  border-bottom: 2px solid white;
+  transition: border-bottom 0.8s ease;
+  cursor: pointer;
 }
 
 .header-menu__link:hover {
