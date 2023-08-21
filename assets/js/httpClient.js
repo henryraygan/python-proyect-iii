@@ -82,7 +82,7 @@ const _httpClient = (() => {
       localStorage.setItem(cacheKey, JSON.stringify(data));
       return data;
     } catch (error) {
-      handleErrors(error);
+      _helpers.handleErrors(error);
     }
   };
 
