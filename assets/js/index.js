@@ -1,7 +1,6 @@
 const menuContainer = document.querySelector(".header-container");
 
 const loadMoviesPosters = async (list, size) => {
-  console.log(list);
   const listMovies = await Promise.all(
     list.slice(0, size).map(async (e) => {
       const id = e.id.split("/")[2];
@@ -36,7 +35,7 @@ async function LoadMovie(type = "cooming") {
       type === "top100"
         ? await _movieService.getTopCast()
         : await _movieService.getCoomingSoon();
-    const movies = await loadMoviesPosters(list, 9);
+    const movies = await loadMoviesPosters(list, 10);
     return movies;
   } catch (error) {
     _helpers.handleErrors(error);
